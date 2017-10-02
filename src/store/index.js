@@ -7,9 +7,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import base64 from 'base-64'
+import shajs from 'sha.js'
 import VuexPersistence from 'vuex-persist'
 import samples from '../assets/js/sample-source'
-var checkdata;
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -27,7 +27,8 @@ export default new Vuex.Store({
     fileName: '',
     isChanged: false,
     autoSave: true,
-    autoSaveIntervalId: null
+    autoSaveIntervalId: null,
+      checkData:'',
   },
   mutations: {
     toggleInOutBox(state) {
@@ -66,6 +67,10 @@ export default new Vuex.Store({
     changeFontSize(state, val) {
       state.fontSize = val
     },
+    setCheckData(state,val)
+      {
+          state.checkData=val;
+      },
     resetEditor(state) {
       state.theme = 'dark'
       state.font = 'Ubuntu Mono'
@@ -131,18 +136,24 @@ export default new Vuex.Store({
           commit('satCode', data.code)
           commit('changeCustomInput', data.customInput)
           commit('fileNameChange', data.fileName)
-            checkdata=data.code;
+          commit('setCheckData',data.code)
       })
     },
 
     saveDataToServer({state, commit, dispatch}) {
         const pasteId = state.route.params.id
-       
+       var x=shajs('sha256').update(state.checkData).digest('hex');
+        //console.log(x)
+        //console.log(shajs('sha256').update(x).digest('hex'))
+        
 //        axios.get(`https://ide.cb.lk/code/${pasteId}`)
 //        .then(({data}) => {console.log(data.code);
 //             checkdata=data.code;})
-        var y=state.code;
-        if(checkdata==y)
+        
+//        console.log(shajs('sha256').update(y).digest('hex'))
+        //console.log(y==x)
+        var y = shajs('sha256').update(state.code).digest('hex');
+        if(x==y)
         return;
         else
                {
