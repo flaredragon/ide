@@ -9,7 +9,7 @@ import axios from 'axios'
 import base64 from 'base-64'
 import VuexPersistence from 'vuex-persist'
 import samples from '../assets/js/sample-source'
-
+var checkdata;
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -131,17 +131,29 @@ export default new Vuex.Store({
           commit('satCode', data.code)
           commit('changeCustomInput', data.customInput)
           commit('fileNameChange', data.fileName)
-        })
+            checkdata=data.code;
+      })
     },
 
     saveDataToServer({state, commit, dispatch}) {
-      return axios.post('https://ide.cb.lk/code/', {
+        const pasteId = state.route.params.id
+       
+//        axios.get(`https://ide.cb.lk/code/${pasteId}`)
+//        .then(({data}) => {console.log(data.code);
+//             checkdata=data.code;})
+        var y=state.code;
+        if(checkdata==y)
+        return;
+        else
+               {
+        return axios.post(`https://ide.cb.lk/code/`, {
         id: (void 0),
         language: state.language,
         code: state.code,
         customInput: state.customInput,
         fileName: state.fileName
       })
+               }
     },
     runCode({state, commit, dispatch}) {
       let lang = 'c'
