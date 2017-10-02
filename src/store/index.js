@@ -69,7 +69,7 @@ export default new Vuex.Store({
     },
     setCheckData(state,val)
       {
-          state.checkData=val;
+          state.checkData=shajs('sha256').update(val).digest('hex');
       },
     resetEditor(state) {
       state.theme = 'dark'
@@ -142,7 +142,7 @@ export default new Vuex.Store({
 
     saveDataToServer({state, commit, dispatch}) {
         const pasteId = state.route.params.id
-       var x=shajs('sha256').update(state.checkData).digest('hex');
+       
         //console.log(x)
         //console.log(shajs('sha256').update(x).digest('hex'))
         
@@ -152,8 +152,8 @@ export default new Vuex.Store({
         
 //        console.log(shajs('sha256').update(y).digest('hex'))
         //console.log(y==x)
-        var y = shajs('sha256').update(state.code).digest('hex');
-        if(x==y)
+        
+        if(state.checkData==shajs('sha256').update(state.code).digest('hex'))
         return;
         else
                {
