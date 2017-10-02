@@ -28,7 +28,7 @@ export default new Vuex.Store({
     isChanged: false,
     autoSave: true,
     autoSaveIntervalId: null,
-      checkData:'',
+    checkData:'',
   },
   mutations: {
     toggleInOutBox(state) {
@@ -67,9 +67,8 @@ export default new Vuex.Store({
     changeFontSize(state, val) {
       state.fontSize = val
     },
-    setCheckData(state,val)
-      {
-          state.checkData=shajs('sha256').update(val).digest('hex');
+    setCheckData(state,val) {
+      state.checkData=shajs('sha256').update(val).digest('hex');
       },
     resetEditor(state) {
       state.theme = 'dark'
@@ -117,18 +116,15 @@ export default new Vuex.Store({
               }]
             }
           });
-
         }
       })
     },
 
     loadDataFromServer({state, commit, dispatch}) {
       const pasteId = state.route.params.id
-
       if (state.route.name !== 'saved') {
         return
       }
-
       axios
         .get(`https://ide.cb.lk/code/${pasteId}`)
         .then(({data}) => {
@@ -139,32 +135,18 @@ export default new Vuex.Store({
           commit('setCheckData',data.code)
       })
     },
-
     saveDataToServer({state, commit, dispatch}) {
-        const pasteId = state.route.params.id
-       
-        //console.log(x)
-        //console.log(shajs('sha256').update(x).digest('hex'))
-        
-//        axios.get(`https://ide.cb.lk/code/${pasteId}`)
-//        .then(({data}) => {console.log(data.code);
-//             checkdata=data.code;})
-        
-//        console.log(shajs('sha256').update(y).digest('hex'))
-        //console.log(y==x)
-        
-        if(state.checkData==shajs('sha256').update(state.code).digest('hex'))
+      if(state.checkData==shajs('sha256').update(state.code).digest('hex'))
         return;
-        else
-               {
+      else {
         return axios.post(`https://ide.cb.lk/code/`, {
         id: (void 0),
         language: state.language,
         code: state.code,
         customInput: state.customInput,
         fileName: state.fileName
-      })
-               }
+        });
+      }
     },
     runCode({state, commit, dispatch}) {
       let lang = 'c'
